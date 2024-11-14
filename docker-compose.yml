@@ -1,0 +1,33 @@
+services:
+  frontend:
+    build:
+      context: frontend
+      target: development
+    volumes:
+      - ./frontend/src:/code/src:ro
+    ports:
+      - 3000:3000
+    depends_on:
+      - backend
+
+  backend:
+    image: rust:latest
+    # tty: true
+    volumes:
+      - ./backend:/app
+    env_file:
+      # - ${PWD}/share/postgres.env
+      - ./share/backend.env
+    ports:
+      - 8080:8080
+    working_dir: /app
+    command: bash -c "RUST_LOG=debug /usr/local/cargo/bin/cargo run --release"
+
+  database:
+    image: postgres:17.0-alpine
+    env_file:
+      - ./share/postgres.env
+    volumes:
+      - ./database:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
