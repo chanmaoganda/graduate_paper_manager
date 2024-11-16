@@ -3,30 +3,29 @@ import logo from "./logo.svg";
 import "./App.css";
 
 function App() {
-  const [message, setMessage] = useState();
+  const [full_paper_data, setStudentMessage] = useState();
   useEffect(() => {
-    fetch("/bar/api/student/list")
+    fetch("/bar/api/full_paper/list")
       .then((res) => res.json())
-      .then((res) => setMessage(`Hello with ${res.length} students`))
+      .then((data) => setStudentMessage(data))
       .catch(console.error);
-  }, [setMessage]);
-  useEffect(() => {
-    fetch("/bar/api/teacher/list")
-      .then((res) => res.json())
-      .then((res) => setMessage(`Hello with ${res.length} teachers`))
-      .catch(console.error);
-  }, [setMessage]);
-  useEffect(() => {
-    fetch("/bar/api/paper/list")
-      .then((res) => res.json())
-      .then((res) => setMessage(`Hello with ${res.length} papers`))
-      .catch(console.error);
-  }, [setMessage]);
+  }, [setStudentMessage]);
+
   return (
     <div className="App">
       <header className="App-header">
         <img src={logo} className="App-logo" alt="logo" />
-        <p>{message || "Loading..."}</p>
+        <p>{full_paper_data ? full_paper_data.map((paper) => (
+          <li>
+            <strong>Paper ID:</strong> {paper.paper_base_id} <br />
+            <strong>Student Name:</strong> {paper.student_name} <br />
+            <strong>Student ID:</strong> {paper.student_email || "N/A"}<br />
+            <strong>Title: </strong> {paper.title} <br />
+            <strong>Teacher Name:</strong> {paper.teacher_name} <br />
+            <strong>Teacher ID:</strong> {paper.teacher_id} <br />
+            <strong>Teacher Email:</strong> {paper.teacher_email || "N/A"} <br />
+          </li>
+        )) : "Loading..."}</p>
         <p>
           Edit <code>src/App.js</code> and save to reload.
         </p>
